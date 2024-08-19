@@ -3,6 +3,7 @@ k: 23
 m: [13,15,17,19,21]
 thr: [0.7]
 ref_fasta_input: "/fs/cbcb-lab/rob/students/noor/Uncertainity/brain_sim/annotation/hg38.fa"
+whitelist_file: "/fs/cbcb-lab/rob/students/noor/Atacseq/737K-cratac-v1.txt"
 prefix_index: "hg38"
 tmp_dir: "/scratch0"
 

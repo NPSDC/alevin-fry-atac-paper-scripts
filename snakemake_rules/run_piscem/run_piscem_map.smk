@@ -27,21 +27,7 @@ out_rad = join(out_dir_k_m_thr, "map.rad")
 out_bed = join(out_dir_k_m_thr, "map.bed")
 time_out = join(out_dir_k_m_thr, "time_align.out")
 
-### data path
-atac_data_path = config["raw_data_dir"]
-data_names = config["data_names"]
-
-### fastqs
-Ls = [1,2]
-data_name = "_".join("{data}".split("_")[:-1])
-
 # fastqs = [[join(atac_data_path, "{data}", f"{data_name}_S3_L00{x}_{d_map[key]}_001.fastq.gz") for x in Ls] for key in d_map.keys()]
-
-def get_fastq(data, key):
-    d_map = OrderedDict({"read1":"R1", "read2":"R3", "barcode":"R2"})
-    # data_name = "_".join(wildcards.data.split("_")[:-1])
-    data_name = "_".join(data.split("_")[:-1])
-    return [join(atac_data_path, data, f"{data_name}_S3_L00{x}_{d_map[key]}_001.fastq.gz") for x in Ls]
 
 rule all_piscem_map:
     input:
