@@ -12,13 +12,14 @@ def get_qos(rule_name):
     return qos_type[rule_name] if rule_name in qos_type else qos_type['default-resources']
 
 input_ref_file = config["ref_fasta_input"]
-ind_output = config["ind_output"]
+pisc_output_path = config["pisc_output_path"]
+ind_output_path = join(pisc_output_path, "index")
 k = config["k"]
 pref_ind = config["prefix_index"]
 pref_ind_k = f"{pref_ind}_k{k}"
 mins = config["m"] #minimizers
 
-ind_k_main_dir = join(ind_output, pref_ind_k)
+ind_k_main_dir = join(ind_output_path, pref_ind_k)
 ind_k_m_dir = join(ind_k_main_dir, "m{m}")
 ind_k_m_pref = join(ind_k_m_dir, f"{pref_ind_k}_m{{m}}")
 time_ind = join(ind_k_m_dir, f"time_k{k}_m{{m}}.out")

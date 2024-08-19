@@ -1,0 +1,24 @@
+### k,m, reference, parameters
+k: 23
+m: [13,15,17,19,21]
+thr: [0.7]
+ref_fasta_input: "/fs/cbcb-lab/rob/students/noor/Uncertainity/brain_sim/annotation/hg38.fa"
+prefix_index: "hg38"
+tmp_dir: "/scratch0"
+
+### Output path
+pisc_output_path: "/fs/nexus-projects/scATAC-seq/piscem"
+chromap_output_path: "/fs/nexus-projects/scATAC-seq/chromap"
+
+### Software
+piscem_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_combine"
+piscem_atac_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem-cpp-combine/build/pesc-sc-atac"
+chromap_path: "/fs/nexus-projects/scATAC-seq/chromap_software/chromap"
+
+wf_local: "/fs/nexus-projects/scATAC-seq/snake/wf_local"
+
+### data path
+raw_data_dir: "/fs/nexus-projects/scATAC-seq/data"
+data_names: ["10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs", "10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs"]
+
+
