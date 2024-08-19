@@ -15,7 +15,7 @@ piscem_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_combine"
 piscem_atac_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem-cpp-combine/build/pesc-sc-atac"
 chromap_path: "/fs/nexus-projects/scATAC-seq/chromap_software/chromap"
 
-wf_local: "/fs/nexus-projects/scATAC-seq/snake/wf_local"
+wf_local: "/fs/nexus-projects/scATAC-seq/snake/snakemake_rules/wf_local"
 
 ### data path
 raw_data_dir: "/fs/nexus-projects/scATAC-seq/data"

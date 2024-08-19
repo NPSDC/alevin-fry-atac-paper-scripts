@@ -1,9 +1,0 @@
-k: 23
-m: [15,17,19,21]
-ref_fasta_input: "/fs/cbcb-lab/rob/students/noor/Uncertainity/brain_sim/annotation/hg38.fa"
-ind_output: "/fs/nexus-projects/scATAC-seq/piscem/index"
-prefix_index: "hg38"
-piscem_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_combine"
-wf_local: "wf_local"
-tmp_dir: "/scratch0"
-

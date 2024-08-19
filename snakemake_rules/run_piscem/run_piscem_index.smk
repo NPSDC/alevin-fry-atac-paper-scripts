@@ -3,15 +3,15 @@ import yaml
 if not workflow.overwrite_configfiles:
     configfile: "config.yml"
 
-wf_path = config["wf_local"]
-wf_local = join(wf_path, "config.yaml")
-with open(wf_local, 'r') as f:
-    qos_type = yaml.safe_load(f)
+# wf_path = config["wf_local"]
+# wf_local = join(wf_path, "config.yaml")
+# with open(wf_local, 'r') as f:
+#     qos_type = yaml.safe_load(f)
 
-def get_qos(rule_name):
-    return qos_type[rule_name] if rule_name in qos_type else qos_type['default-resources']
+# def get_qos(rule_name):
+#     return qos_type[rule_name] if rule_name in qos_type else qos_type['default-resources']
 
-input_ref_file = config["ref_fasta_input"]
+# input_ref_file = config["ref_fasta_input"]
 pisc_output_path = config["pisc_output_path"]
 ind_output_path = join(pisc_output_path, "index")
 k = config["k"]
@@ -26,7 +26,7 @@ time_ind = join(ind_k_m_dir, f"time_k{k}_m{{m}}.out")
 
 piscem_exec_path = config["piscem_path"]
 
-rule all:
+rule all_piscem_ind:
     input:
         expand(f"{ind_k_m_pref}.sshash", m = mins),
         expand(time_ind, m = mins)

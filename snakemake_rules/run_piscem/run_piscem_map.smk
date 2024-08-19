@@ -43,7 +43,7 @@ def get_fastq(data, key):
     data_name = "_".join(data.split("_")[:-1])
     return [join(atac_data_path, data, f"{data_name}_S3_L00{x}_{d_map[key]}_001.fastq.gz") for x in Ls]
 
-rule all:
+rule all_piscem_map:
     input:
         expand(time_out, data = data_names, thr = thr),
         expand(out_rad, data = data_names, thr = thr)
@@ -62,6 +62,7 @@ rule run_piscem_map:
         ind_pref = ind_k_m_pref,
         pisc_atac = config["piscem_atac_path"],
         out_dir = out_dir_k_m_thr,
+        threads = get_qos("run_piscem_map")["cpus_per_task"],
         read1 = lambda wildcards,input: ",".join(input.read1),
         read2 = lambda wildcards,input: ",".join(input.read2),
         barcode = lambda wildcards,input: ",".join(input.barcode)
@@ -74,5 +75,6 @@ rule run_piscem_map:
                 --read2 {params.read2} \
                 --barcode {params.barcode} \
                 --output {params.out_dir} \
-                --thr {params.thr} 
+                --thr {params.thr} \
+                --threads {params.threads}
         """
