@@ -6,6 +6,8 @@ ref_fasta_input: "/fs/cbcb-lab/rob/students/noor/Uncertainity/brain_sim/annotati
 whitelist_file: "/fs/cbcb-lab/rob/students/noor/Atacseq/737K-cratac-v1.txt"
 prefix_index: "hg38"
 tmp_dir: "/scratch0"
+q_macs2: 0.1
+g_macs2: "hs"
 
 ### Output path
 pisc_output_path: "/fs/nexus-projects/scATAC-seq/piscem"
@@ -14,7 +16,10 @@ chromap_output_path: "/fs/nexus-projects/scATAC-seq/chromap"
 ### Software
 piscem_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_combine"
 piscem_atac_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem-cpp-combine/build/pesc-sc-atac"
+piscem_dedup_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_noor/src2/target/release/piscem_atac"
 chromap_path: "/fs/nexus-projects/scATAC-seq/chromap_software/chromap"
+htslib_path: "/fs/cbcb-software/RedHat-8-x86_64/local/htslib/1.16/bin"
+macs2_path: "/fs/cbcb-lab/rob/students/noor/miniforge3/envs/macs2/bin"
 
 wf_local: "/fs/nexus-projects/scATAC-seq/snake/snakemake_rules/wf_local"
 

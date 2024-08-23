@@ -29,14 +29,18 @@ data_name = "_".join("{data}".split("_")[:-1])
 
 include:"run_chromap/run_chromap_index.smk"
 include:"run_chromap/chromap_map.smk"
+include:"run_chromap/run_chromap_macs2.smk"
 include:"run_piscem/run_piscem_index.smk"
 include:"run_piscem/run_piscem_map.smk"
+include:"run_piscem/run_piscem_macs2.smk"
 
 
 rule all:
     input:
         rules.all_chromap_index.input,
+        rules.all_chromap_map.input,
+        rules.all_chromap_macs2.input,
         rules.all_piscem_ind.input,
         rules.all_piscem_map.input,
-        rules.all_chromap_map.input
+        rules.all_piscem_macs2.input,
 

@@ -32,7 +32,8 @@ time_out = join(out_dir_k_m_thr, "time_align.out")
 rule all_piscem_map:
     input:
         expand(time_out, data = data_names, thr = thr),
-        expand(out_rad, data = data_names, thr = thr)
+        expand(out_rad, data = data_names, thr = thr),
+        expand(out_bed, data = data_names, thr = thr)
 
 rule run_piscem_map:
     input:
@@ -64,3 +65,21 @@ rule run_piscem_map:
                 --thr {params.thr} \
                 --threads {params.threads}
         """
+
+rule run_piscem_dedup:
+    input:
+        out_rad
+    output:
+        out_bed
+    params:
+        map_dir = out_dir_k_m_thr,
+        threads = get_qos("run_piscem_map")["cpus_per_task"],
+        pisc_dpath = config["piscem_dedup_path"],
+        whitelist_file = config["whitelist_file"],
+        rev_comp = True
+    shell:
+        """
+            ../bash_scripts/run_piscem_dedup.sh {params.pisc_dpath} \
+                {params.map_dir} {params.whitelist_file} \
+                {params.rev_comp} {params.threads} {params.map_dir}
+        """    
