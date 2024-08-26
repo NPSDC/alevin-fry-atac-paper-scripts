@@ -12,11 +12,10 @@ if not workflow.overwrite_configfiles:
 #     return qos_type[rule_name] if rule_name in qos_type else qos_type['default-resources']
 
 # input_ref_file = config["ref_fasta_input"]
-pisc_output_path = config["pisc_output_path"]
+
 ind_output_path = join(pisc_output_path, "index")
 k = config["k"]
-pref_ind = config["prefix_index"]
-pref_ind_k = f"{pref_ind}_k{k}"
+pref_ind_k = f"{{org}}_k{k}"
 mins = config["m"] #minimizers
 
 ind_k_main_dir = join(ind_output_path, pref_ind_k)
@@ -28,12 +27,12 @@ piscem_exec_path = config["piscem_path"]
 
 rule all_piscem_ind:
     input:
-        expand(f"{ind_k_m_pref}.sshash", m = mins),
-        expand(time_ind, m = mins)
+        expand(f"{ind_k_m_pref}.sshash", m = mins, org = input_ref_org),
+        expand(time_ind, m = mins, org = input_ref_org)
 
 rule run_pisc_index:
     input:
-        input_ref_file = input_ref_file
+        input_ref_file = lambda wildcards:input_ref_dict[wildcards.org]
     output:
         ind_sshash = f"{ind_k_m_pref}.sshash",
         ind_ectab = f"{ind_k_m_pref}.ectab",

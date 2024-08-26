@@ -3,7 +3,9 @@ import yaml
 if not workflow.overwrite_configfiles:
     configfile: "../config.yml"
 
-chromap_output_path = config["chromap_output_path"]
+def get_chrom_ind(wildcards):
+    ref_gen = config['data_dict'][wildcards.data]["org"]
+    return rules.run_chromap_index.output.ind_ref.format(org=ref_gen)
 
 ### map path
 map_output_path = join(chromap_output_path, "map_output")
@@ -18,7 +20,7 @@ rule all_chromap_map:
 
 rule run_chromap_map:
     input:
-        ind = rules.run_chromap_index.output.ind_ref,
+        ind = get_chrom_ind,
         read1 = lambda wildcards:get_fastq(wildcards.data, "read1"),
         read2 = lambda wildcards:get_fastq(wildcards.data, "read2"),
         barcode = lambda wildcards:get_fastq(wildcards.data, "barcode")
@@ -32,7 +34,7 @@ rule run_chromap_map:
         read2 = lambda wildcards,input: ",".join(input.read2),
         barcode = lambda wildcards,input: ",".join(input.barcode),
         whitelist = config["whitelist_file"],
-        ref_file = input_ref_file
+        ref_file = lambda wc:input_ref_dict[config['data_dict'][wc.data]["org"]]
     shell:
         """
             /usr/bin/time -o {output.time_out} {params.chromap_soft} \

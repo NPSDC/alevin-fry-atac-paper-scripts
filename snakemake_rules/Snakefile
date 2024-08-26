@@ -20,11 +20,20 @@ def get_fastq(data, key):
     Ls = data_dict[data]["L"]
     return [join(atac_data_path, data, f"{data_name}_S{S}_L00{str(x)}_{d_map[key]}_001.fastq.gz") for x in Ls]
 
-input_ref_file = config["ref_fasta_input"]
+chromap_output_path = config["chromap_output_path"]
+pisc_output_path = config["pisc_output_path"]
+
+input_ref_dict = config["ref_fasta_input"]
+input_ref_org = list(input_ref_dict.keys())
+# input_ref_file = config["ref_fasta_input"]
+
+pref = f"{{org}}"
 
 ### data path
 atac_data_path = config["raw_data_dir"]
-data_names = list(config["data_dict"].keys())
+data_dict = config["data_dict"]
+data_names = list(data_dict.keys())
+# orgs = [data_dict[x]["org"]]
 
 ### fastqs
 Ls = [1,2]

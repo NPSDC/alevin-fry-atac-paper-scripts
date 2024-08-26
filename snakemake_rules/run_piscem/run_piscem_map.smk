@@ -8,15 +8,12 @@ m = 15
 
 thr = config["thr"]
 
-pisc_output_path = config["pisc_output_path"]
-
 ### index path
 ind_output_path = join(pisc_output_path, "index")
-pref_ind = config["prefix_index"]
-pref_ind_k = f"{pref_ind}_k{k}"
-ind_k_main_dir = join(ind_output_path, pref_ind_k)
-ind_k_m_dir = join(ind_k_main_dir, f"m{m}")
-ind_k_m_pref = join(ind_k_m_dir, f"{pref_ind_k}_m{m}")
+# pref_ind_k = f"{{org}}_k{k}"
+# ind_k_main_dir = join(ind_output_path, pref_ind_k)
+# ind_k_m_dir = join(ind_k_main_dir, f"m{m}")
+# ind_k_m_pref = join(ind_k_m_dir, f"{pref_ind_k}_m{m}")
 
 ### output path
 map_output_path = join(pisc_output_path, "map_output")
@@ -37,7 +34,9 @@ rule all_piscem_map:
 
 rule run_piscem_map:
     input:
-        ind = f"{ind_k_m_pref}.sshash",
+        ind = lambda wildcards:f"{ind_k_m_pref}.sshash".format(m=m,
+                org = data_dict[wildcards.data]["org"]),
+        # ind = "aa",
         read1 = lambda wildcards:get_fastq(wildcards.data, "read1"),
         read2 = lambda wildcards:get_fastq(wildcards.data, "read2"),
         barcode = lambda wildcards:get_fastq(wildcards.data, "barcode")
@@ -46,7 +45,8 @@ rule run_piscem_map:
         time_out = time_out
     params:
         thr = lambda wildcards: wildcards.thr,
-        ind_pref = ind_k_m_pref,
+        ind_pref = lambda wildcards:ind_k_m_pref.format(m = m,
+                        org = data_dict[wildcards.data]["org"]),
         pisc_atac = config["piscem_atac_path"],
         out_dir = out_dir_k_m_thr,
         threads = get_qos("run_piscem_map")["cpus_per_task"],
