@@ -14,25 +14,30 @@ def get_qos(rule_name):
 def get_fastq(data, key):
     d_map = OrderedDict({"read1":"R1", "read2":"R3", "barcode":"R2"})
     # data_name = "_".join(wildcards.data.split("_")[:-1])
+    data_dict = config["data_dict"]
     data_name = "_".join(data.split("_")[:-1])
-    return [join(atac_data_path, data, f"{data_name}_S3_L00{x}_{d_map[key]}_001.fastq.gz") for x in Ls]
+    S = str(data_dict[data]["S"])
+    Ls = data_dict[data]["L"]
+    return [join(atac_data_path, data, f"{data_name}_S{S}_L00{str(x)}_{d_map[key]}_001.fastq.gz") for x in Ls]
 
 input_ref_file = config["ref_fasta_input"]
 
 ### data path
 atac_data_path = config["raw_data_dir"]
-data_names = config["data_names"]
+data_names = list(config["data_dict"].keys())
 
 ### fastqs
 Ls = [1,2]
-data_name = "_".join("{data}".split("_")[:-1])
+# data_name = "_".join("{data}".split("_")[:-1])
 
 include:"run_chromap/run_chromap_index.smk"
 include:"run_chromap/chromap_map.smk"
 include:"run_chromap/run_chromap_macs2.smk"
+include:"run_chromap/run_chromap_clusters.smk"
 include:"run_piscem/run_piscem_index.smk"
 include:"run_piscem/run_piscem_map.smk"
 include:"run_piscem/run_piscem_macs2.smk"
+include:"run_piscem/run_seurat_clusters.smk"
 
 
 rule all:
@@ -40,7 +45,9 @@ rule all:
         rules.all_chromap_index.input,
         rules.all_chromap_map.input,
         rules.all_chromap_macs2.input,
+        rules.all_chromap_clusters.input,
         rules.all_piscem_ind.input,
         rules.all_piscem_map.input,
         rules.all_piscem_macs2.input,
+        rules.all_piscem_clusters.input
 

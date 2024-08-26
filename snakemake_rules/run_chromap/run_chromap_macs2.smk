@@ -4,7 +4,7 @@ import yaml
 map_output_path = join(chromap_output_path, "map_output")
 out_data = join(map_output_path, "{data}")
 map_bed = join(out_data, "map.bed")
-map_sorted_bed_gz = f"{out_file}.gz"
+map_sorted_bed_gz = f"{map_bed}.gz"
 map_tb = f"{map_sorted_bed_gz}.tbi"
 macs2_pref = join(out_data, "macs2")
 macs2_out = f"{macs2_pref}_peaks.narrowPeak"

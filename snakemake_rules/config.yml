@@ -20,11 +20,17 @@ piscem_dedup_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_noor/src2/targ
 chromap_path: "/fs/nexus-projects/scATAC-seq/chromap_software/chromap"
 htslib_path: "/fs/cbcb-software/RedHat-8-x86_64/local/htslib/1.16/bin"
 macs2_path: "/fs/cbcb-lab/rob/students/noor/miniforge3/envs/macs2/bin"
+R_path: "/fs/cbcb-lab/rob/students/noor/miniforge3/envs/R4.3/bin"
 
 wf_local: "/fs/nexus-projects/scATAC-seq/snake/snakemake_rules/wf_local"
 
 ### data path
 raw_data_dir: "/fs/nexus-projects/scATAC-seq/data"
-data_names: ["10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs", "10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs"]
-
-
+data_dict: 
+ 10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs:
+  S: 3
+  L: [1,2]
+ 10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs:
+  S: 3
+  L: [1,2]
+# data_names: ["10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs", "10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs"]

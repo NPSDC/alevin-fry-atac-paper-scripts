@@ -1,1 +1,3 @@
 hgmm: https://s3-us-west-2.amazonaws.com/10x.files/samples/cell-atac/2.1.0/10k_hgmm_ATACv2_nextgem_Chromium_Controller/10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs.tar
+mouse_cortex: https://s3-us-west-2.amazonaws.com/10x.files/samples/cell-atac/2.1.0/8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller/8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller_fastqs.tar
+human_brain_3k: https://s3-us-west-2.amazonaws.com/10x.files/samples/cell-arc/2.0.0/human_brain_3k/human_brain_3k_fastqs.tar
