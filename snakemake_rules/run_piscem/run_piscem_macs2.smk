@@ -9,7 +9,8 @@ macs2_out = f"{macs2_pref}_peaks.narrowPeak"
 
 rule all_piscem_macs2:
     input:
-        expand(macs2_out, data = data_names, thr = thr)
+        expand(macs2_out, data = data_names, thr = thr),
+        expand(map_tb, data = data_names, thr = thr)
 
 rule run_piscem_macs2:
     input:

@@ -15,13 +15,15 @@ rule all_piscem_clusters:
 
 rule run_piscem_rscript:
     input:
-        map_bed = map_sorted_bed_gz,
-        macs2_out = macs2_out
+        map_bed = rules.run_piscem_tabix.input, ## run_piscem_macs2.smk
+        macs2_out = rules.run_piscem_macs2.output, ## run_piscem_macs2.smk
+        tab_out = rules.run_piscem_tabix.output ## run_piscem_macs2.smk
     output:
         out_rdata
     params:
-        Rscript = join(config["R_path"], "Rscript"),
         data = lambda wildcards: wildcards.data,
+        Rscript = join(config["R_path"], "Rscript"),
+        org = lambda wildcards: data_dict[wildcards.data]["org"],
         out_dir = out_dir_k_m_thr
     shell:
         """
@@ -30,7 +32,6 @@ rule run_piscem_rscript:
                 {input.macs2_out} \
                 {params.data} \
                 piscem \
-                hg38 \
-                human \
+                {params.org} \
                 {params.out_dir}
         """

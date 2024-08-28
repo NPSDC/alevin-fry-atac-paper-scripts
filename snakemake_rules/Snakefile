@@ -26,8 +26,10 @@ pisc_output_path = config["pisc_output_path"]
 input_ref_dict = config["ref_fasta_input"]
 input_ref_org = list(input_ref_dict.keys())
 # input_ref_file = config["ref_fasta_input"]
-
 pref = f"{{org}}"
+
+### whitelist
+whl_map = config["whitelist_map"]
 
 ### data path
 atac_data_path = config["raw_data_dir"]
@@ -46,7 +48,7 @@ include:"run_chromap/run_chromap_clusters.smk"
 include:"run_piscem/run_piscem_index.smk"
 include:"run_piscem/run_piscem_map.smk"
 include:"run_piscem/run_piscem_macs2.smk"
-include:"run_piscem/run_seurat_clusters.smk"
+include:"run_piscem/run_piscem_clusters.smk"
 
 
 rule all:

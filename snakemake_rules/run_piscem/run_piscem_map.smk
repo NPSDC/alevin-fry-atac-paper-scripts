@@ -75,8 +75,8 @@ rule run_piscem_dedup:
         map_dir = out_dir_k_m_thr,
         threads = get_qos("run_piscem_map")["cpus_per_task"],
         pisc_dpath = config["piscem_dedup_path"],
-        whitelist_file = config["whitelist_file"],
-        rev_comp = True
+        whitelist_file = lambda wc: whl_map[data_dict[wc.data]['whl_type']],
+        rev_comp = lambda wc: data_dict[wc.data]['rc']
     shell:
         """
             ../bash_scripts/run_piscem_dedup.sh {params.pisc_dpath} \

@@ -21,9 +21,8 @@ peaks <- suppressPackageStartupMessages(makeGRangesFromDataFrame(p))
 
 data_name <- args[3]
 method_name <- args[4]
-genome <- args[5]
-org <- args[6]
-out_path <- args[7]
+ref_genome <- args[5]
+out_path <- args[6]
 
 if (!file.exists(out_path)) {
   stop(paste("invalid path", out_path))
@@ -37,13 +36,10 @@ if(!file.exists(r_img_dir)) {
   dir.create(r_img_dir)
 }
 
-annotations <- if(org=="human") GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v86) else GetGRangesFromEnsDb(ensdb = EnsDb.Mmusculus.v79)
+annotations <- if(ref_genome=="hg38") GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v86) else GetGRangesFromEnsDb(ensdb = EnsDb.Mmusculus.v79)
 seqlevelsStyle(annotations) <- 'UCSC'
-if(org=="human") {
-    genome(annotations) <- "hg38"
-}  else {
-    genome(annotations) <- "mm10"
-}
+genome(annotations) <- ref_genome
+
 
 mapping_cells <- read_tsv(mapping_path, 
     col_names=c("chr","start","stop","cell", "support"), 
@@ -62,7 +58,7 @@ mat <- FeatureMatrix(
   verbose = TRUE
 ) 
 mapping_assay <- CreateChromatinAssay(mat, fragments = mapping_frags, 
-    genome = genome, min.features = 500)
+    genome = ref_genome, min.features = 500)
 seurat_ob <- CreateSeuratObject(mapping_assay, assay = "peaks")
 seurat_ob$Sample <- paste(data_name, method_name, sep = "_")
 
@@ -82,15 +78,15 @@ seurat_ob <- FRiP(
    total.fragments = "fragments"
 )
 
-seurat_ob$blacklist_fraction <- ifelse(genome=="hg38", FractionCountsInRegion(
+seurat_ob$blacklist_fraction <- if(ref_genome=="hg38") FractionCountsInRegion(
   object = seurat_ob, 
   assay = 'peaks',
   regions = blacklist_hg38
-), FractionCountsInRegion(
+) else FractionCountsInRegion(
   object = seurat_ob, 
   assay = 'peaks',
   regions = blacklist_mm10
-)) 
+) 
 
 # Compute nucleosome signal score per cell
 seurat_ob <- NucleosomeSignal(seurat_ob)
@@ -120,11 +116,6 @@ seurat_ob_sub <- FindClusters(object = seurat_ob_sub, verbose = FALSE, algorithm
 save(seurat_ob_sub, file = file.path(r_data_dir, "seurat_ob_sub.rdata"))
 
 ### Images
-seurat_ob$nucleosome_group <- ifelse(seurat_ob$nucleosome_signal > 4, 'NS > 4', 'NS < 4')
-pdf(file.path(r_img_dir, "nucleosome.pdf"))
-FragmentHistogram(object = seurat_ob, group.by = 'nucleosome_group', )
-dev.off()
-
 pdf(file.path(r_img_dir, "peaks_enrichment.pdf"))
 VlnPlot(
   object = seurat_ob,

@@ -16,7 +16,7 @@ time_out = join(out_data, "time_align.out")
 rule all_chromap_map:
     input:
         expand(time_out, data = data_names),
-        expand(out_file, data = data_names),
+        expand(out_file, data = data_names)
 
 rule run_chromap_map:
     input:
@@ -33,8 +33,9 @@ rule run_chromap_map:
         read1 = lambda wildcards,input: ",".join(input.read1),
         read2 = lambda wildcards,input: ",".join(input.read2),
         barcode = lambda wildcards,input: ",".join(input.barcode),
-        whitelist = config["whitelist_file"],
-        ref_file = lambda wc:input_ref_dict[config['data_dict'][wc.data]["org"]]
+        whitelist_file = lambda wildcards: whl_map[data_dict[wildcards.data]['whl_type']],
+        rc = lambda wildcards: "--read-format bc:0:-1:-" if data_dict[wildcards.data]['rc'] else "",
+        ref_file = lambda wc:input_ref_dict[data_dict[wc.data]["org"]]
     shell:
         """
             /usr/bin/time -o {output.time_out} {params.chromap_soft} \
@@ -46,6 +47,6 @@ rule run_chromap_map:
                 -2 {params.read2} \
                 -b {params.barcode} \
                 -o {output.out_file} \
-                --barcode-whitelist {params.whitelist} \
-                --read-format bc:0:-1:-
+                --barcode-whitelist {params.whitelist_file} \
+                {params.rc}
         """
