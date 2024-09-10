@@ -4,7 +4,6 @@ from collections import OrderedDict
 import yaml
 
 k = config["k"]
-m = 15
 
 thr = config["thr"]
 
@@ -18,7 +17,7 @@ ind_output_path = join(pisc_output_path, "index")
 ### output path
 map_output_path = join(pisc_output_path, "map_output")
 out_data = join(map_output_path, "{data}")
-out_dir_k_m = join(out_data, f"k_{k}", f"m_{m}")
+out_dir_k_m = join(out_data, f"k_{k}", f"m_{{m}}")
 out_dir_k_m_thr = join(out_dir_k_m, f"thr={{thr}}")
 out_rad = join(out_dir_k_m_thr, "map.rad")
 out_bed = join(out_dir_k_m_thr, "map.bed")
@@ -28,13 +27,13 @@ time_out = join(out_dir_k_m_thr, "time_align.out")
 
 rule all_piscem_map:
     input:
-        expand(time_out, data = data_names, thr = thr),
-        expand(out_rad, data = data_names, thr = thr),
-        expand(out_bed, data = data_names, thr = thr)
+        expand(time_out, data = data_names, thr = thr, m = mins),
+        expand(out_rad, data = data_names, thr = thr, m = mins),
+        expand(out_bed, data = data_names, thr = thr, m = mins)
 
 rule run_piscem_map:
     input:
-        ind = lambda wildcards:f"{ind_k_m_pref}.sshash".format(m=m,
+        ind = lambda wildcards:f"{ind_k_m_pref}.sshash".format(m=wildcards.m,
                 org = data_dict[wildcards.data]["org"]),
         # ind = "aa",
         read1 = lambda wildcards:get_fastq(wildcards.data, "read1"),
@@ -45,7 +44,7 @@ rule run_piscem_map:
         time_out = time_out
     params:
         thr = lambda wildcards: wildcards.thr,
-        ind_pref = lambda wildcards:ind_k_m_pref.format(m = m,
+        ind_pref = lambda wildcards:ind_k_m_pref.format(m = wildcards.m,
                         org = data_dict[wildcards.data]["org"]),
         pisc_atac = config["piscem_atac_path"],
         out_dir = out_dir_k_m_thr,

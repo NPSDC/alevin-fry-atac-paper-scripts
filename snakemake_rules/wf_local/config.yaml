@@ -3,7 +3,7 @@ latency-wait: 5
 default-resources:
  constraint: EPYC-7313
  slurm_partition: cbcb
- cpus_per_task: 8
+ cpus_per_task: 16
  mem_mb: 100000
  slurm_extra: "'--account=cbcb --qos=high --time=09:10:00 --mail-type=FAIL --mail-user=npsingh@umd.edu'"
  #set-resources:

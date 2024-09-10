@@ -11,7 +11,7 @@ out_rdata = join(rdata_dir, "seurat_ob_sub.rdata")
 
 rule all_piscem_clusters:
     input:
-        expand(out_rdata, thr = thr, data = data_names)
+        expand(out_rdata, thr = thr, data = data_names, m = mins)
 
 rule run_piscem_rscript:
     input:
