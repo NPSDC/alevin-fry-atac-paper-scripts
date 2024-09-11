@@ -1,0 +1,23 @@
+### Software
+mason_sim_path: "/fs/cbcb-lab/rob/students/noor/miniforge3/envs/mason/bin/mason_simulator"
+piscem_atac_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem-cpp-combine/build/pesc-sc-atac"
+chromap_path: "/fs/nexus-projects/scATAC-seq/chromap_software/chromap"
+bowtie2_path: "/fs/cbcb-lab/rob/students/noor/miniforge3/envs/bowtie2/bin"
+k8_path: "/fs/nexus-projects/scATAC-seq/k8"
+paftools_path: "/fs/nexus-projects/scATAC-seq/minimap2/misc/paftools.js"
+seqtk_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/seqtk/seqtk"
+
+### reference
+ref_fasta_input: 
+ hg38: "/fs/nexus-projects/scATAC-seq/reference/GRCh38-2020-A-build/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
+
+## Workflow
+wf_local: "/fs/nexus-projects/scATAC-seq/snake/snakemake_rules/simulated_data/wf_local"
+
+### simulation_params
+num_frags: [1000000]
+read_length: [50]
+error_rate: [0.25]
+
+### output
+out_path: "/fs/nexus-projects/scATAC-seq/simulated_data"
