@@ -21,6 +21,7 @@ rule run_mason:
     output:
         read1 = get_mason_fq("read1"),
         read2 = get_mason_fq("read2"),
+        read3 = get_mason_fq("read3"),
         rsam = get_mason_fq("rsam"),
         read = get_mason_fq("read"),
         r1mf = get_mason_fq("r1mf"),
@@ -39,7 +40,8 @@ rule run_mason:
             
             {params.paftools} mason2fq {output.rsam} > {output.read}
             {params.seqtk} seq -1 {output.read} > {output.r1mf}
-            {params.seqtk} seq -2 {output.read} > {output.r2mf} 
+            {params.seqtk} seq -2 {output.read} > {output.r2mf}
+            cp {params.read1} {params.read3}
         """
 
 

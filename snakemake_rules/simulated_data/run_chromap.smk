@@ -32,7 +32,7 @@ rule run_chromap_map_sam:
         ref = lambda wc:refs[wc.ref_genome],
         index = rules.run_chromap_index.output.ind_ref
     params:
-        threads = get_qos("run_chromap_index")["cpus_per_task"],
+        threads = get_qos("run_chromap_map")["cpus_per_task"],
         chromap_soft = config["chromap_path"]
     output:
         out_sam = map_out_sam_file,

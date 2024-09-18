@@ -21,9 +21,13 @@ refs = config["ref_fasta_input"]
 include: "run_mason.smk"
 include: "run_chromap.smk"
 include: "run_bowtie2.smk"
+include: "run_piscem.smk"
+include: "run_eval.smk"
 
 rule all:
     input:
         rules.all_mason.input,
         rules.all_chromap.input,
-        rules.all_bowtie2.input
+        rules.all_bowtie2.input,
+        rules.all_piscem.input,
+        rules.all_eval.input
