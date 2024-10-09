@@ -5,7 +5,7 @@ def get_mason_fq(fname):
     else:
         return join(mason_sim_path_ref, f"{fname}_nfrag={{nfrag}}_length={{length}}_er={{error_rate}}.fq")
 
-mason_sim_path_ref = join(mason_sim_path, "{ref_genome}")
+mason_sim_path_ref = join(mason_sim_path, "{ref_genome}", f"read_length={{length}}")
 
 rule run_mason:
     input:
@@ -41,7 +41,7 @@ rule run_mason:
             {params.paftools} mason2fq {output.rsam} > {output.read}
             {params.seqtk} seq -1 {output.read} > {output.r1mf}
             {params.seqtk} seq -2 {output.read} > {output.r2mf}
-            cp {params.read1} {params.read3}
+            cp {output.read1} {output.read3}
         """
 
 

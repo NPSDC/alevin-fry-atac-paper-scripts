@@ -17,13 +17,21 @@ wf_local: "/fs/nexus-projects/scATAC-seq/snake/snakemake_rules/simulated_data/wf
 
 ### simulation_params
 num_frags: [1000000]
-read_length: [50]
+read_length: [50, 100, 150]
 error_rate: [0.25]
 
+### chromap_params
+chrom_params:
+ k_w:
+  17: 7
+  23: 11
+
 ### piscem_params
-k: [23,21,19]
+k: [23,25,27,29,31]
 m: [17]
-thr: [0.7]
+thr: [0.6, 0.7, 0.8, 1]
+bin_size: [1000, 10000, 100000, 1000000]
+kmers_orphans: ["true", "false"]
 tmp_dir: "/scratch0"
 
 ### output

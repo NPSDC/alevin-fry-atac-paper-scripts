@@ -4,9 +4,12 @@ piscem_ind_ref_genome_path = join(piscem_ind_path, "{ref_genome}", f"k={{k}}_m={
 piscem_time_ind_path = join(piscem_ind_ref_genome_path, f"time_ind.out")
 piscem_ind_pref = join(piscem_ind_ref_genome_path, "k={k}_m={m}")
 
-piscem_map_out_path = join(piscem_output_path, "map", "{ref_genome}")
-piscem_map_out_path_dir = join(piscem_map_out_path, f"map_nfrag={{nfrag}}_length={{length}}_er={{error_rate}}_k{{k}}_m{{m}}_thr{{thr}}")
+piscem_map_out_path = join(piscem_output_path, "map", "{ref_genome}", "length={length}", "k{k}_m{m}", "bin{bin_size}")
+piscem_map_out_path_dir = join(piscem_map_out_path, f"map_nfrag={{nfrag}}_er={{error_rate}}_thr={{thr}}_orphans={{orp}}")
 piscem_map_out_sam_file = join(piscem_map_out_path_dir, "map.sam")
+
+piscem_map_out_mf_path_dir = join(piscem_map_out_path, f"map_mf_nfrag={{nfrag}}_er={{error_rate}}_thr={{thr}}_orphans={{orp}}")
+piscem_map_out_sam_mf_file = join(piscem_map_out_mf_path_dir, "map.sam")
 time_out_piscem_map = join(piscem_map_out_path_dir, f"time_map.out")
 
 rule run_pisc_index:
@@ -47,15 +50,18 @@ rule run_piscem_map:
         out_time = time_out_piscem_map
     params:
         threads = get_qos("run_chromap_map")["cpus_per_task"],
-        piscem_cpp = config["piscem_atac_path"],
+        piscem_exec_path = join(config["piscem_path"], "target", "release", "piscem"),
         ind_pref = piscem_ind_pref,
         k = lambda wildcards:wildcards.k,
         m = lambda wildcards:wildcards.m,
         thr = lambda wildcards:wildcards.thr,
+        bin_size = lambda wildcards:wildcards.bin_size,
+        orp = lambda wildcards: "--check-kmer-orphan" if wildcards.orp=="true" else " ",
         out_dir = piscem_map_out_path_dir
     shell:
         """
-            /usr/bin/time -o {output.out_time} {params.piscem_cpp} \
+            /usr/bin/time -o {output.out_time} {params.piscem_exec_path} \
+                map-sc-atac \
                 --index {params.ind_pref} \
                 --read1 {input.r1} \
                 --read2 {input.r2} \
@@ -63,7 +69,45 @@ rule run_piscem_map:
                 --output {params.out_dir} \
                 --thr {params.thr} \
                 --threads {params.threads} \
-                --sam-format
+                --sam-format \
+                --no-tn5-shift \
+                --bin-size {params.bin_size} \
+                {params.orp}
+        """
+
+rule run_piscem_map_mf:
+    input:
+        index = rules.run_pisc_index.output,
+        r1 = rules.run_mason.output.r1mf,
+        r2 = rules.run_mason.output.r2mf,
+        r3 = rules.run_mason.output.read3   
+    output:
+        out_piscem = piscem_map_out_sam_mf_file
+    params:
+        threads = get_qos("run_chromap_map")["cpus_per_task"],
+        piscem_exec_path = join(config["piscem_path"], "target", "release", "piscem"),
+        ind_pref = piscem_ind_pref,
+        k = lambda wildcards:wildcards.k,
+        m = lambda wildcards:wildcards.m,
+        thr = lambda wildcards:wildcards.thr,
+        out_dir = piscem_map_out_mf_path_dir,
+        orp = lambda wc: "--check-kmer-orphan" if wc.orp else "",
+        bin_size = lambda wildcards:wildcards.bin_size
+    shell:
+        """
+            {params.piscem_exec_path} \
+                map-sc-atac \
+                --index {params.ind_pref} \
+                --read1 {input.r1} \
+                --read2 {input.r2} \
+                --barcode {input.r3} \
+                --output {params.out_dir} \
+                --thr {params.thr} \
+                --threads {params.threads} \
+                --sam-format \
+                --no-tn5-shift \
+                --bin-size {params.bin_size} \
+                {params.orp}
         """
 
 rule all_piscem:
@@ -72,4 +116,10 @@ rule all_piscem:
             ref_genome = r_gen),
         expand(rules.run_piscem_map.output, k = config["k"], m = config["m"],
             thr = config['thr'], ref_genome = r_gen, nfrag = config["num_frags"],
-            length = config["read_length"], error_rate = config["error_rate"])
+            length = config["read_length"], error_rate = config["error_rate"], 
+            bin_size = config["bin_size"], orp = config["kmers_orphans"]),
+        # expand(rules.run_piscem_map_mf.output, k = config["k"], m = config["m"],
+        #     thr = config['thr'], ref_genome = r_gen, nfrag = config["num_frags"],
+        #     length = config["read_length"], error_rate = config["error_rate"], 
+        #     bin_size=config["bin_size"], orp = config["kmers_orphans"])
+
