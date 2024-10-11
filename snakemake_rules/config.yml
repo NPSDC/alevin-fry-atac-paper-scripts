@@ -1,10 +1,12 @@
 ### k,m, reference, parameters
-k: 23
-m: [13,15,17,19,21]
-thr: [0.7]
+k: [23,25,31]
+m: [17]
+thr: [0.7,1]
+bin_size: [1000]
+kmers_orphans: ["true", "false"]
 ref_fasta_input: 
- hg38: /fs/cbcb-lab/rob/students/noor/Uncertainity/brain_sim/annotation/hg38.fa
- mm10: /fs/nexus-projects/scATAC-seq/data/mm10/GRCm38.primary_assembly.genome.fa.gz
+ hg38: /fs/nexus-projects/scATAC-seq/reference/GRCh38-2020-A-build/Homo_sapiens.GRCh38.dna.primary_assembly.fa
+ mm10: /fs/nexus-projects/scATAC-seq/reference/mm10-2020-A-build/Mus_musculus.GRCm38.dna.primary_assembly.fa.modified
 whitelist_map:
   atac: /fs/cbcb-lab/rob/students/noor/Atacseq/cellranger-atac-2.1.0/lib/python/atac/barcodes/737K-cratac-v1.txt
   arc:  /fs/cbcb-lab/rob/students/noor/Atacseq/cellranger-arc-2.0.2/lib/python/atac/barcodes/737K-arc-v1.txt
@@ -14,12 +16,11 @@ q_macs2: 0.1
 g_macs2: "hs"
 
 ### Output path
-pisc_output_path: "/fs/nexus-projects/scATAC-seq/piscem2"
+pisc_output_path: "/fs/nexus-projects/scATAC-seq/piscem"
 chromap_output_path: "/fs/nexus-projects/scATAC-seq/chromap"
 
 ### Software
 piscem_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_combine"
-piscem_atac_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem-cpp-combine/build/pesc-sc-atac"
 piscem_dedup_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_noor/src2/target/release/piscem_atac"
 chromap_path: "/fs/nexus-projects/scATAC-seq/chromap_software/chromap"
 htslib_path: "/fs/cbcb-software/RedHat-8-x86_64/local/htslib/1.16/bin"
@@ -31,28 +32,28 @@ wf_local: "/fs/nexus-projects/scATAC-seq/snake/snakemake_rules/wf_local"
 ### data path
 raw_data_dir: "/fs/nexus-projects/scATAC-seq/data"
 data_dict: 
- 10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs:
-  org: hg38
-  S: 3
-  L: [1,2]
-  whl_type: atac
-  rc: true
+#  10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs:
+#   org: hg38
+#   S: 3
+#   L: [1,2]
+#   whl_type: atac
+#   rc: true
  10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs:
   org: hg38
   S: 3
   L: [1,2]
   whl_type: atac
   rc: true
-#  8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller_fastqs:
-#   org: mm10
-#   S: 6
-#   L: [3,4]
-#   whl_type: atac
-#   rc: true
-#  human_brain_3k_fastqs:
-#   org: hg38
-#   S: 19
-#   L: [1,2,3,4]
-#   whl_type: arc
-#   rc: false
+ 8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller_fastqs:
+  org: mm10
+  S: 6
+  L: [3,4]
+  whl_type: atac
+  rc: true
+ human_brain_3k_fastqs:
+  org: hg38
+  S: 19
+  L: [1,2,3,4]
+  whl_type: arc
+  rc: false
 # data_names: ["10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs", "10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs"]

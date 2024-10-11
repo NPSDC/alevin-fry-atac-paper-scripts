@@ -1,5 +1,5 @@
 executor: slurm
-latency-wait: 5
+latency-wait: 30
 default-resources:
  constraint: EPYC-7313
  slurm_partition: cbcb
