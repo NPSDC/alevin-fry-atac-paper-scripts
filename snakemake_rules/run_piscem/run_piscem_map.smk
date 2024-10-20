@@ -17,8 +17,8 @@ rule all_piscem_map:
         #     orp = config["kmers_orphans"], bin_size = config["bin_size"]),
         # expand(out_bed, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
         #     orp = config["kmers_orphans"], bin_size = config["bin_size"])
-        expand(out_bed, data = data_names, m = config["m"], k = [23, 25], thr = [0.7, 1], 
-            orp = ["false"], bin_size = 1000)
+        # expand(out_bed, data = data_names, m = config["m"], k = [23, 25], thr = [0.7, 1], 
+        #     orp = ["false"], bin_size = 1000)
 
 rule run_piscem_map:
     input:
@@ -29,7 +29,7 @@ rule run_piscem_map:
         barcode = lambda wildcards:get_fastq(wildcards.data, "barcode")
     output:
         # out_rad = out_rad,
-        time_out = time_out
+        time_out = protected(time_out)
     params:
         ind_pref = lambda wildcards:ind_k_m_pref.format(m = wildcards.m,
                         k = wildcards.k, org = data_dict[wildcards.data]["org"]),
@@ -43,9 +43,10 @@ rule run_piscem_map:
         k = lambda wildcards:wildcards.k,
         m = lambda wildcards:wildcards.m,
         thr = lambda wildcards:wildcards.thr,
-        bin_size = lambda wildcards:wildcards.bin_size,
+        bin_size = lambda wildcards: wildcards.bin_size if wildcards.bin_size != "use_chr" else "1000",
+        use_chr = lambda wildcards: "--use-chr" if wildcards.bin_size == "use_chr" else "",
         orp = lambda wildcards: "--check-kmer-orphan" if wildcards.orp=="true" else " ",
-        rm = lambda wildcards: "yes" if int(wildcards.k) > 25 or int(wildcards.bin_size) > 1000 else ""
+        rm = lambda wildcards: "yes" if int(wildcards.k) > 25 or wildcards.bin_size != "1000" else ""
     
     shell:
         """
@@ -59,12 +60,15 @@ rule run_piscem_map:
                 --thr {params.thr} \
                 --bin-size {params.bin_size} \
                 {params.orp} \
+                {params.use_chr} \
                 --threads {params.threads}
             echo "{params.rm}"
+            echo "{params.use_chr}"
             if [ "{params.rm}" == "yes" ]; then
                 rm {params.out_rad}
             fi
         """
+    
 
 rule run_piscem_dedup:
     input:

@@ -12,7 +12,7 @@ rule all_piscem_macs2:
         expand(macs2_out, data = data_names, thr = [0.7], m = config["m"],
             k = [25], bin_size = [1000], orp = ["false"]),
         expand(map_tb, data = data_names, thr = [0.7], m = config["m"], 
-            k = [23, 25], bin_size = [1000], orp = ["false"])
+            k = [25], bin_size = [1000], orp = ["false"])
 
 rule run_piscem_sort:
     input:

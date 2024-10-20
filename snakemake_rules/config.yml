@@ -2,8 +2,8 @@
 k: [23,25,31]
 m: [17]
 thr: [0.7,1]
-bin_size: [10000, 100000, 1000000]
-kmers_orphans: ["true", "false"]
+bin_size: [1000, 10000, 100000, 1000000, "use_chr"]
+kmers_orphans: ["false"]
 ref_fasta_input: 
  hg38: /fs/nexus-projects/scATAC-seq/reference/GRCh38-2020-A-build/Homo_sapiens.GRCh38.dna.primary_assembly.fa
  mm10: /fs/nexus-projects/scATAC-seq/reference/mm10-2020-A-build/Mus_musculus.GRCm38.dna.primary_assembly.fa.modified
@@ -20,6 +20,7 @@ g_macs2:
 ### Output path
 pisc_output_path: "/fs/nexus-projects/scATAC-seq/piscem"
 chromap_output_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/chromap_output"
+cellranger_output_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/cell_ranger_output"
 
 ### Software
 piscem_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_combine"
