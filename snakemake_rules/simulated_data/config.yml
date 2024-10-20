@@ -30,12 +30,12 @@ chrom_params:
 k: [23,25,27,29,31]
 m: [17]
 thr: [0.6, 0.7, 0.8, 1]
-bin_size: [1000, 10000, 100000, 1000000]
+bin_size: [1000, 10000, 100000, 1000000, "use_chr"]
 kmers_orphans: ["true", "false"]
 tmp_dir: "/scratch0"
 
 ### output
-out_path: "/fs/nexus-projects/scATAC-seq/simulated_data"
+out_path: "/fs/cbcb-scratch/npsingh/simulated_data"
 
 ### evaluation scripts
 eval_path: "/fs/nexus-projects/scATAC-seq/alignment_evaluation/evaluation_PE"

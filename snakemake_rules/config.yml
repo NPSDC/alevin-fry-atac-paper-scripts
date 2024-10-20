@@ -2,7 +2,7 @@
 k: [23,25,31]
 m: [17]
 thr: [0.7,1]
-bin_size: [1000]
+bin_size: [10000, 100000, 1000000]
 kmers_orphans: ["true", "false"]
 ref_fasta_input: 
  hg38: /fs/nexus-projects/scATAC-seq/reference/GRCh38-2020-A-build/Homo_sapiens.GRCh38.dna.primary_assembly.fa
@@ -13,11 +13,13 @@ whitelist_map:
 prefix_index: "hg38"
 tmp_dir: "/scratch0"
 q_macs2: 0.1
-g_macs2: "hs"
-
+g_macs2: 
+ hg38: "hs"
+ mm10: "mm"
+ 
 ### Output path
 pisc_output_path: "/fs/nexus-projects/scATAC-seq/piscem"
-chromap_output_path: "/fs/nexus-projects/scATAC-seq/chromap"
+chromap_output_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/chromap_output"
 
 ### Software
 piscem_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_combine"

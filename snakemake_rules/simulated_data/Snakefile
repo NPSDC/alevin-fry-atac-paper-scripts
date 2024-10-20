@@ -1,0 +1,33 @@
+##  ulimit -Sn 4096
+
+from os.path import join
+import yaml
+if not workflow.overwrite_configfiles:
+    configfile: "config.yml"
+
+wf_path = config["wf_local"]
+wf_local = join(wf_path, "config.yaml")
+with open(wf_local, 'r') as f:
+    qos_type = yaml.safe_load(f)
+
+def get_qos(rule_name):
+    return qos_type[rule_name] if rule_name in qos_type else qos_type['default-resources']
+
+out_path = config["out_path"]
+r_gen = list(config["ref_fasta_input"].keys()) # references
+mason_sim_path = join(config["out_path"], "fastqs")
+refs = config["ref_fasta_input"]
+
+include: "run_mason.smk"
+include: "run_chromap.smk"
+include: "run_bowtie2.smk"
+include: "run_piscem.smk"
+include: "run_eval.smk"
+
+rule all:
+    input:
+        rules.all_mason.input,
+        rules.all_chromap.input,
+        rules.all_bowtie2.input,
+        rules.all_piscem.input,
+        rules.all_eval.input

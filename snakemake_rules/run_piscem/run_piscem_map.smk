@@ -13,8 +13,8 @@ rule all_piscem_map:
     input:
         expand(time_out, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
             orp = config["kmers_orphans"], bin_size = config["bin_size"]),
-        expand(out_rad, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
-            orp = config["kmers_orphans"], bin_size = config["bin_size"]),
+        # expand(out_rad, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
+        #     orp = config["kmers_orphans"], bin_size = config["bin_size"]),
         # expand(out_bed, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
         #     orp = config["kmers_orphans"], bin_size = config["bin_size"])
         expand(out_bed, data = data_names, m = config["m"], k = [23, 25], thr = [0.7, 1], 
@@ -28,13 +28,14 @@ rule run_piscem_map:
         read2 = lambda wildcards:get_fastq(wildcards.data, "read2"),
         barcode = lambda wildcards:get_fastq(wildcards.data, "barcode")
     output:
-        out_rad = out_rad,
+        # out_rad = out_rad,
         time_out = time_out
     params:
         ind_pref = lambda wildcards:ind_k_m_pref.format(m = wildcards.m,
                         k = wildcards.k, org = data_dict[wildcards.data]["org"]),
         piscem_exec_path = join(piscem_exec_path, "target", "release", "piscem"),
         out_dir = out_dir_k_m_rem,
+        out_rad = out_rad,
         threads = get_qos("run_piscem_map")["cpus_per_task"],
         read1 = lambda wildcards,input: ",".join(input.read1),
         read2 = lambda wildcards,input: ",".join(input.read2),
@@ -43,7 +44,8 @@ rule run_piscem_map:
         m = lambda wildcards:wildcards.m,
         thr = lambda wildcards:wildcards.thr,
         bin_size = lambda wildcards:wildcards.bin_size,
-        orp = lambda wildcards: "--check-kmer-orphan" if wildcards.orp=="true" else " "
+        orp = lambda wildcards: "--check-kmer-orphan" if wildcards.orp=="true" else " ",
+        rm = lambda wildcards: "yes" if int(wildcards.k) > 25 or int(wildcards.bin_size) > 1000 else ""
     
     shell:
         """
@@ -58,6 +60,10 @@ rule run_piscem_map:
                 --bin-size {params.bin_size} \
                 {params.orp} \
                 --threads {params.threads}
+            echo "{params.rm}"
+            if [ "{params.rm}" == "yes" ]; then
+                rm {params.out_rad}
+            fi
         """
 
 rule run_piscem_dedup:

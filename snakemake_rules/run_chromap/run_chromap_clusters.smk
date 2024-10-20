@@ -24,10 +24,11 @@ rule run_chromap_rscript:
         data = lambda wildcards: wildcards.data,
         Rscript = join(config["R_path"], "Rscript"),
         out_dir = out_chromap_data,
-        org = lambda wildcards: data_dict[wildcards.data]["org"]
+        org = lambda wildcards: data_dict[wildcards.data]["org"],
+        time = join(out_chromap_data, "time_rscript.out") 
     shell:
         """
-            {params.Rscript} ../bash_scripts/proc_peaks.R \
+            /usr/bin/time -o {params.time} {params.Rscript} ../bash_scripts/proc_peaks.R \
                 {input.map_bed} \
                 {input.macs2_out} \
                 {params.data} \
