@@ -95,15 +95,6 @@ seurat_ob <- NucleosomeSignal(seurat_ob)
 Annotation(seurat_ob) <- annotations
 seurat_ob <- TSSEnrichment(seurat_ob, fast=TRUE)
 
-seurat_ob_sub <- subset(x = seurat_ob,
-        subset = nCount_peaks > 1000 &
-        nCount_peaks < 100000 &
-        FRiP > 0.15 &
-        blacklist_fraction < 0.05 &
-        nucleosome_signal < 4 &
-        TSS.enrichment > 2
-        )
-
 seurat_ob_sub <- RunTFIDF(seurat_ob)
 seurat_ob_sub <- FindTopFeatures(seurat_ob_sub, min.cutoff = 'q0')
 seurat_ob_sub <- RunSVD(seurat_ob_sub)

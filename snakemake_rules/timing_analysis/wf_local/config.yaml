@@ -1,0 +1,21 @@
+executor: slurm
+latency-wait: 30
+default-resources:
+ constraint: EPYC-7313
+ slurm_partition: cbcb
+ cpus_per_task: 32
+ mem_mb: 100000
+ slurm_extra: "'--account=cbcb --qos=high --time=09:10:00 --mail-type=FAIL --mail-user=npsingh@umd.edu'"
+ #set-resources:
+ #run_piscem_rscript:
+ #mem_mb: 100000
+ #cpus_per_task: 8
+ #slurm_partition: cbcb
+ #slurm_extra: "'--account=cbcb --qos=high --time=09:10:00 --mail-type=FAIL --mail-user=npsingh@umd.edu'"
+ #run_chromap_rscript:
+ #mem_mb: 100000
+ #  cpus_per_task: 8
+ #slurm_partition: cbcb
+  #slurm_extra: "'--account=cbcb --qos=high --time=09:10:00 --mail-type=FAIL --mail-user=npsingh@umd.edu'"
+  
+
