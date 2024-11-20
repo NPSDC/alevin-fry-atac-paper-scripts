@@ -1,0 +1,7 @@
+{
+    "bed_out_dir":"/fs/nexus-projects/scATAC-seq/piscem/10k_new_prof_k23_psc_off=true_ps_skip=false_thr=0.7/piscem",
+    "bed_out_file":"map.bed",
+    "output_dir":"/fs/nexus-projects/scATAC-seq/snake/piscem/peaks_new",
+    "macs_pref":"piscem_macs2",
+    "q":"0.1"
+}

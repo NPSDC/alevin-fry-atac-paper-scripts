@@ -7,7 +7,8 @@ out_rdata = join(rdata_dir, "seurat_ob_sub.rdata")
 
 rule all_cellranger_clusters:
     input:
-        expand(out_rdata, data = data_names)
+        expand(out_rdata, data = ["10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs", 
+        "8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller_fastqs"])
 
 rule run_cellranger_rscript:
     input:
@@ -19,9 +20,9 @@ rule run_cellranger_rscript:
     params:
         data = lambda wildcards: wildcards.data,
         Rscript = join(config["R_path"], "Rscript"),
-        out_dir = out_cellranger_data,
+        out_dir = out_cellranger_dir,
         org = lambda wildcards: data_dict[wildcards.data]["org"],
-        time = join(out_cellranger_data, "time_rscript.out") 
+        time = join(out_cellranger_dir, "time_rscript.out") 
     shell:
         """
             /usr/bin/time -o {params.time} {params.Rscript} ../bash_scripts/proc_peaks.R \

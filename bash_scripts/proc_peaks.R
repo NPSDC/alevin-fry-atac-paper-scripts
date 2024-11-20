@@ -40,8 +40,17 @@ annotations <- if(ref_genome=="hg38") GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens
 seqlevelsStyle(annotations) <- 'UCSC'
 genome(annotations) <- ref_genome
 
-
-mapping_cells <- read_tsv(mapping_path, 
+skip=0
+if(method_name=="cell_ranger") {
+  if (ref_genome == "hg38") {
+    skip= 51
+  } else {
+    skip = 52
+  }
+  
+}
+print(paste("skip ", skip))
+mapping_cells <- read_tsv(mapping_path, skip=skip,
     col_names=c("chr","start","stop","cell", "support"), 
     col_types=c("-","-","-","-","-"),
     col_select="cell") %>% 
