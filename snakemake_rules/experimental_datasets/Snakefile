@@ -13,7 +13,6 @@ def get_qos(rule_name):
 
 def get_fastq(data, key):
     d_map = OrderedDict({"read1":"R1", "read2":"R3", "barcode":"R2"})
-    # data_name = "_".join(wildcards.data.split("_")[:-1])
     data_dict = config["data_dict"]
     data_name = "_".join(data.split("_")[:-1])
     S = str(data_dict[data]["S"])
