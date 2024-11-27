@@ -1,0 +1,67 @@
+from os.path import join
+import yaml
+if not workflow.overwrite_configfiles:
+    configfile: "config.yml"
+
+wf_path = config["wf_local"]
+wf_local = join(wf_path, "config.yaml")
+with open(wf_local, 'r') as f:
+    qos_type = yaml.safe_load(f)
+
+def get_qos(rule_name):
+    return qos_type[rule_name] if rule_name in qos_type else qos_type['default-resources']
+
+def get_fastq(data, key):
+    d_map = OrderedDict({"read1":"R1", "read2":"R3", "barcode":"R2"})
+    # data_name = "_".join(wildcards.data.split("_")[:-1])
+    data_dict = config["data_dict"]
+    data_name = "_".join(data.split("_")[:-1])
+    S = str(data_dict[data]["S"])
+    Ls = data_dict[data]["L"]
+    return [join(atac_data_path, data, f"{data_name}_S{S}_L00{str(x)}_{d_map[key]}_001.fastq.gz") for x in Ls]
+
+chromap_output_path = config["chromap_output_path"]
+pisc_output_path = config["pisc_output_path"]
+
+input_ref_dict = config["ref_fasta_input"]
+input_ref_org = list(input_ref_dict.keys())
+# input_ref_file = config["ref_fasta_input"]
+pref = f"{{org}}"
+
+### whitelist
+whl_map = config["whitelist_map"]
+
+### data path
+atac_data_path = config["raw_data_dir"]
+data_dict = config["data_dict"]
+data_names = list(data_dict.keys())
+# orgs = [data_dict[x]["org"]]
+
+### fastqs
+Ls = [1,2]
+# data_name = "_".join("{data}".split("_")[:-1])
+
+include:"run_chromap/run_chromap_index.smk"
+include:"run_chromap/chromap_map.smk"
+include:"run_chromap/run_chromap_macs2.smk"
+include:"run_chromap/run_chromap_clusters.smk"
+include:"run_piscem/run_piscem_index.smk"
+include:"run_piscem/run_piscem_map.smk"
+include:"run_piscem/run_piscem_macs2.smk"
+include:"run_piscem/run_piscem_clusters.smk"
+include:"run_cellranger/run_cellranger_macs2.smk"
+include:"run_cellranger/run_cellranger_cluster.smk"
+
+
+rule all:
+    input:
+        rules.all_chromap_index.input,
+        rules.all_chromap_map.input,
+        rules.all_chromap_macs2.input,
+        rules.all_chromap_clusters.input,
+        rules.all_piscem_ind.input,
+        rules.all_piscem_map.input,
+        rules.all_piscem_macs2.input,
+        rules.all_piscem_clusters.input,
+        rules.all_cellranger_macs2.input,
+        rules.all_cellranger_clusters.input,

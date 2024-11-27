@@ -1,0 +1,62 @@
+### k,m, reference, parameters
+k: [23,25,31]
+m: [17]
+thr: [0.7,1]
+bin_size: [1000, 10000, 100000, 1000000, "use_chr"]
+kmers_orphans: ["false"]
+ref_fasta_input: 
+ hg38: /fs/nexus-projects/scATAC-seq/reference/GRCh38-2020-A-build/Homo_sapiens.GRCh38.dna.primary_assembly.fa
+ mm10: /fs/nexus-projects/scATAC-seq/reference/mm10-2020-A-build/Mus_musculus.GRCm38.dna.primary_assembly.fa.modified
+whitelist_map:
+  atac: /fs/cbcb-lab/rob/students/noor/Atacseq/cellranger-atac-2.1.0/lib/python/atac/barcodes/737K-cratac-v1.txt
+  arc:  /fs/cbcb-lab/rob/students/noor/Atacseq/cellranger-arc-2.0.2/lib/python/atac/barcodes/737K-arc-v1.txt
+prefix_index: "hg38"
+tmp_dir: "/scratch0"
+q_macs2: 0.1
+g_macs2: 
+ hg38: "hs"
+ mm10: "mm"
+ 
+### Output path
+pisc_output_path: "/fs/nexus-projects/scATAC-seq/piscem"
+chromap_output_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/chromap_output"
+cellranger_output_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/cell_ranger_output"
+
+### Software
+piscem_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_combine"
+piscem_dedup_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_noor/src2/target/release/piscem_atac"
+chromap_path: "/fs/nexus-projects/scATAC-seq/chromap_software/chromap"
+htslib_path: "/fs/cbcb-software/RedHat-8-x86_64/local/htslib/1.16/bin"
+macs2_path: "/fs/cbcb-lab/rob/students/noor/miniforge3/envs/macs2/bin"
+R_path: "/fs/cbcb-lab/rob/students/noor/miniforge3/envs/R4.3/bin"
+
+wf_local: "/fs/nexus-projects/scATAC-seq/snake/snakemake_rules/wf_local"
+
+### data path
+raw_data_dir: "/fs/nexus-projects/scATAC-seq/data"
+data_dict: 
+#  10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs:
+#   org: hg38
+#   S: 3
+#   L: [1,2]
+#   whl_type: atac
+#   rc: true
+ 10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs:
+  org: hg38
+  S: 3
+  L: [1,2]
+  whl_type: atac
+  rc: true
+ 8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller_fastqs:
+  org: mm10
+  S: 6
+  L: [3,4]
+  whl_type: atac
+  rc: true
+ human_brain_3k_fastqs:
+  org: hg38
+  S: 19
+  L: [1,2,3,4]
+  whl_type: arc
+  rc: false
+# data_names: ["10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs", "10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs"]
