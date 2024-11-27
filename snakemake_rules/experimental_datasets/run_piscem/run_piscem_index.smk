@@ -6,7 +6,7 @@ ind_k_m_dir = join(ind_k_dir, f"m{{m}}")
 ind_k_m_pref = join(ind_k_m_dir, f"k{{k}}_m{{m}}")
 time_ind = join(ind_k_m_dir, f"time_k{{k}}_m{{m}}.out")
 
-piscem_exec_path = config["piscem_path"]
+piscem_path = config["piscem_path"]
 
 rule all_piscem_ind:
     input:
@@ -27,7 +27,7 @@ rule run_pisc_index:
         ind_pref = ind_k_m_pref,
         m = lambda wildcards:wildcards.m,
         k = lambda wildcards:wildcards.k,
-        piscem_exec_path = join(piscem_exec_path, "target", "release", "piscem"),
+        piscem_exec_path = join(piscem_path, "target", "release", "piscem"),
         threads = get_qos("run_pisc_index")["cpus_per_task"],
         tmpdir = join(config["tmp_dir"], "org{org}_k{k}_m{m}")
  

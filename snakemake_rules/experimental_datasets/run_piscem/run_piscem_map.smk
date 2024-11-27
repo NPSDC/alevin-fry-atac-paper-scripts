@@ -13,12 +13,10 @@ rule all_piscem_map:
     input:
         expand(time_out, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
             orp = config["kmers_orphans"], bin_size = config["bin_size"]),
-        # expand(out_rad, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
-        #     orp = config["kmers_orphans"], bin_size = config["bin_size"]),
-        # expand(out_bed, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
-        #     orp = config["kmers_orphans"], bin_size = config["bin_size"])
-        # expand(out_bed, data = data_names, m = config["m"], k = [23, 25], thr = [0.7, 1], 
-        #     orp = ["false"], bin_size = 1000)
+        expand(out_rad, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
+            orp = config["kmers_orphans"], bin_size = config["bin_size"]),
+        expand(out_bed, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
+            orp = config["kmers_orphans"], bin_size = config["bin_size"])
 
 rule run_piscem_map:
     input:
@@ -28,12 +26,12 @@ rule run_piscem_map:
         read2 = lambda wildcards:get_fastq(wildcards.data, "read2"),
         barcode = lambda wildcards:get_fastq(wildcards.data, "barcode")
     output:
-        # out_rad = out_rad,
+        out_rad = out_rad,
         time_out = protected(time_out)
     params:
         ind_pref = lambda wildcards:ind_k_m_pref.format(m = wildcards.m,
                         k = wildcards.k, org = data_dict[wildcards.data]["org"]),
-        piscem_exec_path = join(piscem_exec_path, "target", "release", "piscem"),
+        piscem_exec_path = join(piscem_path, "target", "release", "piscem"),
         out_dir = out_dir_k_m_rem,
         out_rad = out_rad,
         threads = get_qos("run_piscem_map")["cpus_per_task"],
@@ -46,7 +44,8 @@ rule run_piscem_map:
         bin_size = lambda wildcards: wildcards.bin_size if wildcards.bin_size != "use_chr" else "1000",
         use_chr = lambda wildcards: "--use-chr" if wildcards.bin_size == "use_chr" else "",
         orp = lambda wildcards: "--check-kmer-orphan" if wildcards.orp=="true" else " ",
-        rm = lambda wildcards: "yes" if int(wildcards.k) > 25 or wildcards.bin_size != "1000" else ""
+        rm = "false"
+        # rm = lambda wildcards: "yes" if int(wildcards.k) > 25 or wildcards.bin_size != "1000" else "" ## save on memory
     
     shell:
         """
@@ -78,12 +77,12 @@ rule run_piscem_dedup:
     params:
         map_dir = out_dir_k_m_rem,
         threads = get_qos("run_piscem_map")["cpus_per_task"],
-        pisc_dpath = config["piscem_dedup_path"],
+        af_path = config["alevin_exec_path"],
         whitelist_file = lambda wc: whl_map[data_dict[wc.data]['whl_type']],
         rev_comp = lambda wc: data_dict[wc.data]['rc']
     shell:
         """
-            ../bash_scripts/run_piscem_dedup.sh {params.pisc_dpath} \
+            ../../scripts/run_piscem_dedup.sh {params.af_path} \
                 {params.map_dir} {params.whitelist_file} \
                 {params.rev_comp} {params.threads} {params.map_dir}
-        """    
+        """

@@ -1,33 +1,26 @@
 from os.path import join
 import yaml
 
-map_sorted_bed = join(out_dir_k_m_rem, "map_sorted.bed")
-map_sorted_bed_gz = f"{map_sorted_bed}.gz"
-map_tb = f"{map_sorted_bed}.gz.tbi"
+map_sorted_bed_gz = f"{map_bed}.gz"
+map_tb = f"{map_sorted_bed_gz}.tbi"
 macs2_pref = join(out_dir_k_m_rem, "macs2")
 macs2_out = f"{macs2_pref}_peaks.narrowPeak"
 
 rule all_piscem_macs2:
     input:
+        # expand(macs2_out, data = data_names, thr = [0.7], m = config["m"],
+        #     k = [25], bin_size = [1000], orp = ["false"]),
+        # expand(map_tb, data = data_names, thr = [0.7], m = config["m"], 
+        #     k = [25], bin_size = [1000], orp = ["false"])
         expand(macs2_out, data = data_names, thr = [0.7], m = config["m"],
-            k = [25], bin_size = [1000], orp = ["false"]),
+            k = [23], bin_size = [1000], orp = ["false"]),
         expand(map_tb, data = data_names, thr = [0.7], m = config["m"], 
-            k = [25], bin_size = [1000], orp = ["false"])
+            k = [23], bin_size = [1000], orp = ["false"])
 
-rule run_piscem_sort:
-    input:
-        rules.run_piscem_dedup.output
-    output:
-        bed = map_sorted_bed,
-        time_sort = join(out_dir_k_m_rem, "time_sort.out")
-    shell:
-        """
-            /usr/bin/time -o {output.time_sort} sort -k1,1 -k2,2n -k3,3n {input} -o {output.bed}
-        """
 
 rule run_piscem_macs2:
     input:
-        rules.run_piscem_sort.output.bed
+        rules.run_piscem_dedup.output
     output:
         macs2_out
     params:
@@ -51,7 +44,7 @@ rule run_piscem_macs2:
 
 rule run_piscem_bgzip:
     input:
-        rules.run_piscem_sort.output.bed
+        rules.run_piscem_dedup.output
     output:
         map_sorted_bed_gz
     params:
