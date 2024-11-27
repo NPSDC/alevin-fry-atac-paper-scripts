@@ -58,39 +58,9 @@ rule run_chromap_map_sam:
                 -o {output.out_sam}
         """
 
-
-
-rule run_chromap_map_mf_sam:
-    input:
-        r1 = rules.run_mason.output.r1mf,
-        r2 = rules.run_mason.output.r2mf,
-        ref = lambda wc:refs[wc.ref_genome],
-        index = rules.run_chromap_index.output.ind_ref
-        # lambda wc:refs[wc.ref_genome]
-    params:
-        threads = get_qos("run_chromap_map_mf_sam")["cpus_per_task"],
-        chromap_soft = config["chromap_path"]
-    output:
-        out_sam_mf = map_out_sam_mf_file
-    shell:
-        """
-            {params.chromap_soft} \
-                -t {params.threads} \
-                -x {input.index} \
-                -r {input.ref} \
-                -1 {input.r1} \
-                -2 {input.r2} \
-                -q 0 \
-                --SAM \
-                -o {output.out_sam_mf}
-        """
-l = len(chrom_k)
 rule all_chromap:
     input:
         expand(expand(chrom_ind_ref, zip, k = chrom_k, w = chrom_w, allow_missing=True), ref_genome = r_gen),
         expand(expand(rules.run_chromap_map_sam.output, zip, k = chrom_k, w = chrom_w, allow_missing=True), 
-            ref_genome = r_gen, nfrag = config["num_frags"], length = config["read_length"], 
-            error_rate = config["error_rate"]),
-        expand(expand(rules.run_chromap_map_mf_sam.output, zip, k = chrom_k, w = chrom_w, allow_missing=True),
             ref_genome = r_gen, nfrag = config["num_frags"], length = config["read_length"], 
             error_rate = config["error_rate"])
