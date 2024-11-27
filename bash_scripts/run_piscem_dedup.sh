@@ -14,14 +14,8 @@ echo "Correcting barcodes\n"
     --rev-comp $rev_comp \
     --output-dir $output_path
 
-echo "Collation\n"
-/usr/bin/time -o $output_path/time_collate.txt $piscem_executable collate \
+echo "Sort\n"
+/usr/bin/time -o $output_path/time_sort.txt $piscem_executable sort \
     --input-dir $output_path \
-    --rad-dir $output_path \
+    --rad-dir $map_rad \
     --threads $threads
-
-echo "Deduplication\n"
-/usr/bin/time -o $output_path/time_deduplicate.txt $piscem_executable deduplicate \
-    --input-dir $output_path \
-    --threads $threads \
-    --rev-comp $rev_comp
