@@ -7,14 +7,14 @@ rev_comp=$4
 threads=$5
 output_path=$6
 
-echo "Correcting barcodes\n"
+echo "Correcting barcodes"
 /usr/bin/time -o $output_path/time_whitelist.txt $piscem_executable generate-permit-list \
     --input $map_rad \
     --unfiltered-pl $whitelist_file \
     --rev-comp $rev_comp \
     --output-dir $output_path
 
-echo "Sort\n"
+echo "Sort"
 /usr/bin/time -o $output_path/time_sort.txt $piscem_executable sort \
     --input-dir $output_path \
     --rad-dir $map_rad \
