@@ -7,44 +7,35 @@ thr: [0.7]
 bin_size: [1000]
 kmers_orphans: ["false"]
 ref_fasta_input: 
- hg38: /mnt/scratch3/noor/scAtacSeq/cellranger_ref/refdata-cellranger-arc-GRCh38-2020-A-2.0.0/fasta/genome.fa
- mm10:  /mnt/scratch3/noor/scAtacSeq/cellranger_ref/refdata-cellranger-arc-mm10-2020-A-2.0.0/fasta/genome.fa
+ hg38: /fs/nexus-projects/scATAC-seq/reference/GRCh38-2020-A-build/Homo_sapiens.GRCh38.dna.primary_assembly.fa
+ mm10: /fs/nexus-projects/scATAC-seq/reference/mm10-2020-A-build/Mus_musculus.GRCm38.dna.primary_assembly.fa.modified
 whitelist_map:
-  atac: /mnt/scratch3/noor/scAtacSeq/data/barcodes/737K-cratac-v1.txt
-  arc:  /mnt/scratch3/noor/scAtacSeq/data/barcodes/737K-arc-v1.txt
-prefix_index: "hg38"
-tmp_dir: "/mnt/scratch1"
+  atac: /fs/cbcb-lab/rob/students/noor/Atacseq/cellranger-atac-2.1.0/lib/python/atac/barcodes/737K-cratac-v1.txt
+
+tmp_dir: "/scratch1"
 q_macs2: 0.1
 g_macs2: "hs"
 
 threads: [4,8,16,20,24,32]
-#threads: [32]
 
 ### Output path
-pisc_output_path: "/mnt/scratch3/noor/scAtacSeq/analysis/piscem"
-chromap_output_path: "/mnt/scratch3/noor/scAtacSeq/analysis/chromap"
+pisc_output_path: "/scratch0/piscem"
+chromap_output_path: "/scratch0/chromap"
 
 ### Software
-piscem_path: "/mnt/scratch3/noor/scAtacSeq/piscem"
-piscem_dedup_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_noor/src2/target/release/piscem_atac"
-piscem_cpp_path: "/mnt/scratch3/noor/scAtacSeq/piscem/piscem-cpp/build/pesc-sc-atac"
-chromap_path: "/mnt/scratch3/noor/scAtacSeq/chromap/chromap"
+piscem_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_combine"
+alevin_exec_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/alevin-fry/target/release/alevin_fry_atac"
+chromap_path: "/fs/nexus-projects/scATAC-seq/chromap_software/chromap"
 
-htslib_path: "/fs/cbcb-software/RedHat-8-x86_64/local/htslib/1.16/bin"
-macs2_path: "/fs/cbcb-lab/rob/students/noor/miniforge3/envs/macs2/bin"
-R_path: "/fs/cbcb-lab/rob/students/noor/miniforge3/envs/R4.3/bin"
+# htslib_path: "/fs/cbcb-software/RedHat-8-x86_64/local/htslib/1.16/bin"
+# macs2_path: "/fs/cbcb-lab/rob/students/noor/miniforge3/envs/macs2/bin"
+# R_path: "/fs/cbcb-lab/rob/students/noor/miniforge3/envs/R4.3/bin"
 
-wf_local: "/mnt/scratch3/noor/scAtacSeq/atac_seq_data/snakemake_rules/timing_analysis/wf_local"
+wf_local: "/fs/nexus-projects/scATAC-seq/snake/snakemake_rules/timing_analysis/wf_local"
 
 ### data path
-raw_data_dir: "/mnt/scratch3/noor/scAtacSeq/data"
+raw_data_dir: "/fs/nexus-projects/scATAC-seq/data"
 data_dict: 
-#  10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs:
-#   org: hg38
-#   S: 3
-#   L: [1,2]
-#   whl_type: atac
-#   rc: true
  10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs:
   org: hg38
   S: 3
@@ -57,10 +48,3 @@ data_dict:
   L: [3,4]
   whl_type: atac
   rc: true
- human_brain_3k_fastqs:
-  org: hg38
-  S: 19
-  L: [1,2,3,4]
-  whl_type: arc
-  rc: false
-# data_names: ["10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs", "10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs"]

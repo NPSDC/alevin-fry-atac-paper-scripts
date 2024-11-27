@@ -13,13 +13,7 @@ time_out_3 = join(out_dir_k_m_rem, "time_align_threads={threads}_3.out")
 
 rule all_piscem_map:
     input:
-        expand(time_out_1, data = ["10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs", "8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller_fastqs"], m = config["m"], k = config["k"], thr = config["thr"], threads = threads, orp = config["kmers_orphans"], bin_size = config["bin_size"]),
-        #expand(out_rad, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
-        #    orp = config["kmers_orphans"], bin_size = config["bin_size"]),
-        # expand(out_bed, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
-        #     orp = config["kmers_orphans"], bin_size = config["bin_size"])
-        #expand(out_bed, data = data_names, m = config["m"], k = [23, 25], thr = [0.7, 1], 
-        #    orp = ["false"], bin_size = 1000)
+        expand(time_out_1, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], threads = threads, orp = config["kmers_orphans"], bin_size = config["bin_size"]),
 
 rule run_piscem_map:
     input:
@@ -35,8 +29,8 @@ rule run_piscem_map:
     params:
         ind_pref = lambda wildcards:ind_k_m_pref.format(m = wildcards.m,
                         k = wildcards.k, org = data_dict[wildcards.data]["org"]),
-        #piscem_exec_path = join(piscem_exec_path, "target", "release", "piscem"),
-        piscem_exec_path = config["piscem_cpp_path"],
+        piscem_exec_path = join(piscem_path, "target", "release", "piscem"),
+
         out_rad = out_rad,
         out_dir = out_dir_k_m_rem,
         threads = lambda wildcards:wildcards.threads,
@@ -52,6 +46,7 @@ rule run_piscem_map:
     shell:
         """
             /usr/bin/time -o {output.time_out_1} {params.piscem_exec_path} \
+                map-sc-atac \
                 --index {params.ind_pref} \
                 --read1 {params.read1} \
                 --read2 {params.read2} \
@@ -64,6 +59,7 @@ rule run_piscem_map:
 	    rm {params.out_rad}
 
             /usr/bin/time -o {output.time_out_2} {params.piscem_exec_path} \
+                map-sc-atac \
                 --index {params.ind_pref} \
                 --read1 {params.read1} \
                 --read2 {params.read2} \
@@ -76,6 +72,7 @@ rule run_piscem_map:
 	  rm {params.out_rad}
 
             /usr/bin/time -o {output.time_out_3} {params.piscem_exec_path} \
+                map-sc-atac \
                 --index {params.ind_pref} \
                 --read1 {params.read1} \
                 --read2 {params.read2} \
@@ -86,21 +83,3 @@ rule run_piscem_map:
                 {params.orp} \
                 --threads {params.threads}
         """
-
-rule run_piscem_dedup:
-    input:
-        out_rad
-    output:
-        out_bed
-    params:
-        map_dir = out_dir_k_m_rem,
-        threads = get_qos("run_piscem_map")["cpus_per_task"],
-        pisc_dpath = config["piscem_dedup_path"],
-        whitelist_file = lambda wc: whl_map[data_dict[wc.data]['whl_type']],
-        rev_comp = lambda wc: data_dict[wc.data]['rc']
-    shell:
-        """
-            ../bash_scripts/run_piscem_dedup.sh {params.pisc_dpath} \
-                {params.map_dir} {params.whitelist_file} \
-                {params.rev_comp} {params.threads} {params.map_dir}
-        """ 
