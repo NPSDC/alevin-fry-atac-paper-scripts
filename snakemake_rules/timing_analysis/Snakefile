@@ -61,6 +61,6 @@ rule all:
         # rules.all_chromap_clusters.input,
         rules.all_piscem_ind.input,
         rules.all_piscem_map.input,
-        # rules.all_piscem_macs2.input,
-        # rules.all_piscem_clusters.input
+        #rules.all_piscem_macs2.input,
+        #rules.all_piscem_clusters.input
 

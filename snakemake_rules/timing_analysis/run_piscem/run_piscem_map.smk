@@ -8,14 +8,18 @@ out_bed = join(out_dir_k_m_rem, "map.bed")
 time_out_1 = join(out_dir_k_m_rem, "time_align_threads={threads}_1.out")
 time_out_2 = join(out_dir_k_m_rem, "time_align_threads={threads}_2.out")
 time_out_3 = join(out_dir_k_m_rem, "time_align_threads={threads}_3.out")
+time_genpm_1 = join(out_dir_k_m_rem, "time_genpm_threads={threads}_1.out")
+time_genpm_2 = join(out_dir_k_m_rem, "time_genpm_threads={threads}_2.out")
+time_genpm_3 = join(out_dir_k_m_rem, "time_genpm_threads={threads}_3.out")
+time_sort_1 = join(out_dir_k_m_rem, "time_sort_threads={threads}_1.out")
+time_sort_2 = join(out_dir_k_m_rem, "time_sort_threads={threads}_2.out")
+time_sort_3 = join(out_dir_k_m_rem, "time_sort_threads={threads}_3.out")
 
 # fastqs = [[join(atac_data_path, "{data}", f"{data_name}_S3_L00{x}_{d_map[key]}_001.fastq.gz") for x in Ls] for key in d_map.keys()]
 
 rule all_piscem_map:
     input:
-        expand(time_out_1, data = ["10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs", "8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller_fastqs"], m = config["m"], k = config["k"], thr = config["thr"], threads = threads, orp = config["kmers_orphans"], bin_size = config["bin_size"]),
-        #expand(out_rad, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
-        #    orp = config["kmers_orphans"], bin_size = config["bin_size"]),
+        map_out = expand(time_out_1, data = ["10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs", "8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller_fastqs"], m = config["m"], k = config["k"], thr = config["thr"], threads = threads, orp = config["kmers_orphans"], bin_size = config["bin_size"]),
         # expand(out_bed, data = data_names, m = config["m"], k = config["k"], thr = config["thr"], 
         #     orp = config["kmers_orphans"], bin_size = config["bin_size"])
         #expand(out_bed, data = data_names, m = config["m"], k = [23, 25], thr = [0.7, 1], 
@@ -32,11 +36,16 @@ rule run_piscem_map:
         time_out_1 = time_out_1,
         time_out_2 = time_out_2,
         time_out_3 = time_out_3,
+        time_genpm_1 = time_genpm_1,
+        time_genpm_2 = time_genpm_2,
+        time_genpm_3 = time_genpm_3,
+        time_sort_1 = time_sort_1,
+        time_sort_2 = time_sort_2,
+        time_sort_3 = time_sort_3,
     params:
         ind_pref = lambda wildcards:ind_k_m_pref.format(m = wildcards.m,
                         k = wildcards.k, org = data_dict[wildcards.data]["org"]),
-        #piscem_exec_path = join(piscem_exec_path, "target", "release", "piscem"),
-        piscem_exec_path = config["piscem_cpp_path"],
+        piscem_exec_path = join(piscem_exec_path, "target", "release", "piscem"),
         out_rad = out_rad,
         out_dir = out_dir_k_m_rem,
         threads = lambda wildcards:wildcards.threads,
@@ -47,11 +56,15 @@ rule run_piscem_map:
         m = lambda wildcards:wildcards.m,
         thr = lambda wildcards:wildcards.thr,
         bin_size = lambda wildcards:wildcards.bin_size,
-        orp = lambda wildcards: "--check-kmer-orphan" if wildcards.orp=="true" else " "
+        orp = lambda wildcards: "--check-kmer-orphan" if wildcards.orp=="true" else " ",
+        timejson = "/usr/bin/time -o timeout -f \'{\"exit_code\" : %x, \"time_user_seconds\" : %U, \"time_system_seconds\" : %S, \"time_wall_clock_seconds\" : %e, \"rss_max_kbytes\" : %M, \"rss_avg_kbytes\" : %t, \"page_faults_major\" : %F, \"page_faults_minor\" : %R, \"io_inputs\" : %I, \"io_outputs\" : %O, \"context_switches_voluntary\" : %w, \"context_switches_involuntary\" : %c, \"cpu_percentage\" : \"%P\", \"signals_received\" : %k}\'",
+        af_path = config["alevin_fry_path"],
+        whitelist_file = lambda wc: whl_map[data_dict[wc.data]['whl_type']],
+        rev_comp = lambda wc: data_dict[wc.data]['rc'],
     
     shell:
         """
-            /usr/bin/time -o {output.time_out_1} {params.piscem_exec_path} \
+            {params.timejson} {params.piscem_exec_path} map-sc-atac \
                 --index {params.ind_pref} \
                 --read1 {params.read1} \
                 --read2 {params.read2} \
@@ -61,9 +74,23 @@ rule run_piscem_map:
                 --bin-size {params.bin_size} \
                 {params.orp} \
                 --threads {params.threads}
-	    rm {params.out_rad}
+	    mv timeout {output.time_out_1}
+	    
+	    {params.timejson} {params.af_path} atac generate-permit-list \
+		--input {params.out_dir} \
+		--output-dir {params.out_dir} \
+		--unfiltered-pl {params.whitelist_file} \
+		--threads {params.threads} \
+		--rev-comp {params.rev_comp}
+	    mv timeout {output.time_genpm_1}
 
-            /usr/bin/time -o {output.time_out_2} {params.piscem_exec_path} \
+	    {params.timejson} {params.af_path} atac sort \
+		--input-dir {params.out_dir} \
+		--rad-dir {params.out_dir} \
+		--threads {params.threads}
+	    mv timeout {output.time_sort_1}
+            
+	   {params.timejson} {params.piscem_exec_path} map-sc-atac \
                 --index {params.ind_pref} \
                 --read1 {params.read1} \
                 --read2 {params.read2} \
@@ -73,9 +100,23 @@ rule run_piscem_map:
                 --bin-size {params.bin_size} \
                 {params.orp} \
                 --threads {params.threads}
-	  rm {params.out_rad}
+	    mv timeout {output.time_out_2}
+	    
+	    {params.timejson} {params.af_path} atac generate-permit-list \
+		--input {params.out_dir} \
+		--output-dir {params.out_dir} \
+		--unfiltered-pl {params.whitelist_file} \
+		--threads {params.threads} \
+		--rev-comp {params.rev_comp}
+	    mv timeout {output.time_genpm_2}
 
-            /usr/bin/time -o {output.time_out_3} {params.piscem_exec_path} \
+	    {params.timejson} {params.af_path} atac sort \
+		--input-dir {params.out_dir} \
+		--rad-dir {params.out_dir} \
+		--threads {params.threads}
+	    mv timeout {output.time_sort_2}
+
+            {params.timejson} {params.piscem_exec_path} map-sc-atac \
                 --index {params.ind_pref} \
                 --read1 {params.read1} \
                 --read2 {params.read2} \
@@ -85,22 +126,20 @@ rule run_piscem_map:
                 --bin-size {params.bin_size} \
                 {params.orp} \
                 --threads {params.threads}
+	    mv timeout {output.time_out_3}
+
+	    {params.timejson} {params.af_path} atac generate-permit-list \
+		--input {params.out_dir} \
+		--output-dir {params.out_dir} \
+		--unfiltered-pl {params.whitelist_file} \
+		--threads {params.threads} \
+		--rev-comp {params.rev_comp}
+	    mv timeout {output.time_genpm_3}
+	    
+	    {params.timejson} {params.af_path} atac sort \
+		--input-dir {params.out_dir} \
+		--rad-dir {params.out_dir} \
+		--threads {params.threads}
+	    mv timeout {output.time_sort_3}
         """
 
-rule run_piscem_dedup:
-    input:
-        out_rad
-    output:
-        out_bed
-    params:
-        map_dir = out_dir_k_m_rem,
-        threads = get_qos("run_piscem_map")["cpus_per_task"],
-        pisc_dpath = config["piscem_dedup_path"],
-        whitelist_file = lambda wc: whl_map[data_dict[wc.data]['whl_type']],
-        rev_comp = lambda wc: data_dict[wc.data]['rc']
-    shell:
-        """
-            ../bash_scripts/run_piscem_dedup.sh {params.pisc_dpath} \
-                {params.map_dir} {params.whitelist_file} \
-                {params.rev_comp} {params.threads} {params.map_dir}
-        """ 

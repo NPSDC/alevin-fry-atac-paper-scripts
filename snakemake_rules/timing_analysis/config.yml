@@ -17,17 +17,15 @@ tmp_dir: "/mnt/scratch1"
 q_macs2: 0.1
 g_macs2: "hs"
 
-threads: [4,8,16,20,24,32]
-#threads: [32]
+threads: [4,8,12,16,20,24,32]
 
 ### Output path
-pisc_output_path: "/mnt/scratch3/noor/scAtacSeq/analysis/piscem"
+pisc_output_path: "/mnt/scratch3/noor/scAtacSeq/analysis/piscem_timing"
 chromap_output_path: "/mnt/scratch3/noor/scAtacSeq/analysis/chromap"
 
 ### Software
 piscem_path: "/mnt/scratch3/noor/scAtacSeq/piscem"
-piscem_dedup_path: "/fs/cbcb-lab/rob/students/noor/Atacseq/piscem_noor/src2/target/release/piscem_atac"
-piscem_cpp_path: "/mnt/scratch3/noor/scAtacSeq/piscem/piscem-cpp/build/pesc-sc-atac"
+alevin_fry_path: "/mnt/scratch3/noor/scAtacSeq/alevin-fry/target/release/alevin-fry"
 chromap_path: "/mnt/scratch3/noor/scAtacSeq/chromap/chromap"
 
 htslib_path: "/fs/cbcb-software/RedHat-8-x86_64/local/htslib/1.16/bin"
@@ -39,28 +37,28 @@ wf_local: "/mnt/scratch3/noor/scAtacSeq/atac_seq_data/snakemake_rules/timing_ana
 ### data path
 raw_data_dir: "/mnt/scratch3/noor/scAtacSeq/data"
 data_dict: 
-#  10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs:
-#   org: hg38
-#   S: 3
-#   L: [1,2]
-#   whl_type: atac
-#   rc: true
- 10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs:
-  org: hg38
-  S: 3
-  L: [1,2]
-  whl_type: atac
-  rc: true
- 8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller_fastqs:
-  org: mm10
-  S: 6
-  L: [3,4]
-  whl_type: atac
-  rc: true
- human_brain_3k_fastqs:
-  org: hg38
-  S: 19
-  L: [1,2,3,4]
-  whl_type: arc
-  rc: false
-# data_names: ["10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs", "10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs"]
+  10k_hgmm_ATACv2_nextgem_Chromium_Controller_fastqs:
+   org: hg38
+   S: 3
+   L: [1,2]
+   whl_type: atac
+   rc: true
+  10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs:
+   org: hg38
+   S: 3
+   L: [1,2]
+   whl_type: atac
+   rc: true
+  8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller_fastqs:
+   org: mm10
+   S: 6
+   L: [3,4]
+   whl_type: atac
+   rc: true
+  human_brain_3k_fastqs:
+   org: hg38
+   S: 19
+   L: [1,2,3,4]
+   whl_type: arc
+   rc: false
+data_names: ["8k_mouse_cortex_ATACv2_nextgem_Chromium_Controller_fastqs", "10k_pbmc_ATACv2_nextgem_Chromium_Controller_fastqs"]
